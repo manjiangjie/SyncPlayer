@@ -1,6 +1,11 @@
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+
 body {
     background: url("./images/binding_dark_@2X.png") repeat;
+    color: white;
+
     h1 {
-      color: red;
+      color: purple;
     }
 }

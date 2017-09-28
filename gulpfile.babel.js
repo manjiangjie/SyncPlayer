@@ -1,25 +1,18 @@
-import gulp from "gulp";
-import webpack from "webpack";
-import chalk from "chalk";
-import rimraf from "rimraf";
-import {create as createServerConfig} from "./webpack.server";
-import {create as createClientConfig} from "./webpack.client";
+import gulp from 'gulp';
+import webpack from 'webpack';
+import chalk from 'chalk';
+import rimraf from 'rimraf';
+import createServerConfig  from './webpack.server';
+import createClientConfig from './webpack.client';
+const $ = require('gulp-load-plugins')();
 
-const $ = require("gulp-load-plugins")();
-
-// Public Tasks
+//Public Tasks
 gulp.task("clean:server", cb => rimraf("./build", cb));
 gulp.task("clean:client", cb => rimraf("./public/build", cb));
 gulp.task("clean", gulp.parallel("clean:server", "clean:client"));
 
 gulp.task("dev:server", gulp.series("clean:server", devServerBuild));
-gulp.task("dev", gulp
-	.series(
-		"clean",
-		devServerBuild,
-		gulp.parallel(
-			devServerWatch,
-			devServerReload)));
+gulp.task("dev", gulp.series("clean", devServerBuild, gulp.parallel(devServerWatch, devServerReload)));
 
 gulp.task("prod:server", gulp.series("clean:server", prodServerBuild));
 gulp.task("prod:client", gulp.series("clean:client", prodClientBuild));
@@ -35,8 +28,8 @@ function prodClientBuild(callback) {
 }
 
 // Private Server Tasks
-const devServerWebpack = webpack(createServerConfig(true));
-const prodServerWebpack = webpack(createServerConfig(false));
+const devServerWebpack = webpack(createServerConfig(true)),
+	prodServerWebpack = webpack(createServerConfig(false));
 
 function devServerBuild(callback) {
 	devServerWebpack.run((error, stats) => {

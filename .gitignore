@@ -1,6 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
-/node_modules
-/.idea
-/build
-/bin
-/routes
+node_modules
+.idea
+build
+public/build
+bin
+routes
+app.js

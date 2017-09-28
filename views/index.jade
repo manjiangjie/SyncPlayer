@@ -1,16 +1,27 @@
 doctype html
 html
     head
-        title SyncPlayer
+        title Sync Player
         if useExternalStyles
-            link(rel="stylesheet", href="/stylesheets/style.css", type="text/css")
+            link(rel='stylesheet', href='/build/application.css')
+
     body
         .site-wrap
-            .chat-list
-                ul
-            .chat-form
-                input(type="text", placeholder="message")
+            .column.left
+                section.playlist
+                    h1
+                        i.fa.fa-circle-o-notch.fa-spin
+            .column.center
+                section.player
+                    h1
+                        i.fa.fa-circle-o-notch.fa-spin
+                section.chat
+                    h1
+                        i.fa.fa-circle-o-notch.fa-spin
+            .column.right
+                section.users
+                    h1
+                        i.fa.fa-circle-o-notch.fa-spin
 
-            script(src="/build/vendor.js")
-            script(src="/socket.io/socket.io.js")
-            script(src="/application.js")
+        script(src='/build/vendor.js')
+        script(src='/build/application.js')

@@ -1,36 +1,46 @@
-var path = require("path");
-var webpack = require("webpack");
+var path = require('path');
+var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-const vendorModules = [
-	"jquery",
-	"lodash",
-	"socket.io-client",
-	"rxjs",
-	"moment",
-	"moment-duration-format"];
-
-const dirname = path.resolve("./");
+const dirname = path.resolve('./');
+const vendorModules = ["jquery", "lodash"];
 
 function createConfig(isDebug) {
 	const devTool = isDebug ? "eval-source-map" : "source-map";
-	const plugins = [new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' })];
-	const cssLoader = {test: /\.css$/, loader: "style!css"};
-	const sassLoader = {test: /\.scss$/, loader: "style!css!sass"};
-	const appEntry = ["./src/client/application.js"];
+	const plugins = [new webpack.optimize.CommonsChunkPlugin({
+		name: "vendor",
+		filename: "vendor.js"
+	})];
+
+	const cssLoader = {
+		test: /\.css$/,
+		use: [{loader:'style-loader'}, {loader:'css-loader'}],
+		exclude: /node_modules/
+	};
+	const sassLoader = {
+		test: /\.scss$/,
+		use: [{loader: "style-loader"}, {loader: "css-loader"}, {loader: "sass-loader"}]
+	};
+	const appEntry = ['./src/client/application.js'];
 
 	if (!isDebug) {
 		plugins.push(new webpack.optimize.UglifyJsPlugin());
-		plugins.push(new ExtractTextPlugin("[name].css"));
+		plugins.push(new ExtractTextPlugin('[name].css'));
 
-		cssLoader.loader = ExtractTextPlugin.extract("style", "css");
-		sassLoader.loader = ExtractTextPlugin.extract("style", "css!sass");
+		cssLoader.use = ExtractTextPlugin.extract({
+			fallback: 'style-loader',
+			use: 'css-loader'
+		});
+
+		sassLoader.use = ExtractTextPlugin.extract({
+			fallback: 'style-loader',
+			use: ['css-loader', 'sass-loader']
+		});
 	} else {
 		plugins.push(new webpack.HotModuleReplacementPlugin());
 		appEntry.splice(0, 0, "webpack-hot-middleware/client");
 	}
-
-	// WEBPACK CONFIG
+	//WEBPACK CONFIG
 	return {
 		devtool: devTool,
 		entry: {
@@ -44,17 +54,30 @@ function createConfig(isDebug) {
 		},
 		resolve: {
 			alias: {
-				shared: path.join(dirname, "src", "shared")
+				shared: path.join(dirname, 'src', 'shared')
 			}
 		},
 		module: {
-			loaders: [
-				{ test: /\.js$/, loader: "babel", exclude: /node_modules/ },
-				{ test: /\.js$/, loader: "eslint", exclude: /node_modules/ },
-				{ test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)/, loader: "url-loader?limit=1024" },
+			rules: [
+				{
+					enforce: "pre",
+					test: /\.js$/,
+					exclude: /node_modules/,
+					loader: "eslint-loader",
+				},
+				{
+					test: /\.js$/,
+					exclude: /node_modules/,
+					loader: "babel-loader",
+				},
+				{
+					test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)$/,
+					exclude: /node_modules/,
+					loader: "url-loader?limit=1024",
+				},
 				cssLoader,
 				sassLoader
-			]
+			],
 		},
 		plugins: plugins
 	};
