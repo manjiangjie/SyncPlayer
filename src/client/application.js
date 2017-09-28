@@ -1,4 +1,7 @@
 "use strict";
+import "./application.scss";
+import $ from "jquery";
+import _ from "lodash";
 
 const socket = io();
 
