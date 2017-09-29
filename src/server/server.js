@@ -4,9 +4,11 @@ import express from 'express';
 import http from 'http';
 import socketIo from 'socket.io';
 import chalk from 'chalk';
+import {ObservableSocket} from "../shared/observable-socket";
+import {Observable} from "rxjs";
 
-const isDevelopment = process.env.NODE_ENV !== "production";
 //Setup
+const isDevelopment = process.env.NODE_ENV !== "production";
 const app = express();
 const server = new http.Server(app);
 const io = socketIo(server);
@@ -51,6 +53,11 @@ app.get('/', (req, res) => {
 // Socket
 io.on('connection', socket => {
 	console.log(`Got connection from ${socket.request.connection.remoteAddress}`);
+
+	const client = new ObservableSocket();
+	client.onAction("login", creds => {
+		return Observable.of(`User ${creds.username}`).delay(3000);
+	});
 });
 
 // Startup

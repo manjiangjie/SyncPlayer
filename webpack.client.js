@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const dirname = path.resolve('./');
-const vendorModules = ["jquery", "lodash"];
+const vendorModules = ["jquery", "lodash", "socket.io-client", "rxjs"];
 
 function createConfig(isDebug) {
 	const devTool = isDebug ? "eval-source-map" : "source-map";
@@ -71,8 +71,7 @@ function createConfig(isDebug) {
 					loader: "babel-loader",
 				},
 				{
-					test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)$/,
-					exclude: /node_modules/,
+					test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
 					loader: "url-loader?limit=1024",
 				},
 				cssLoader,
