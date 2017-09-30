@@ -8,7 +8,7 @@ export function clientMessage(message) {
 
 export class ObservableSocket {
 	get isConnected() { return this._state.isConnected; }
-	get isReconnected() { return this._state.isReconnecting; }
+	get isReconnecting() { return this._state.isReconnecting; }
 	get isTotallyDead() { return !this._state.isConnected && !this._state.isReconnecting; }
 
 	constructor(socket) {
@@ -21,7 +21,7 @@ export class ObservableSocket {
 		this.status$ = Observable.merge(
 			this.on$("connect").map(() => ({isConnected: true})),
 			this.on$("disconnect").map(() => ({isConnected: false})),
-			this.on$("reconnect").map(attempt => ({isConnected: false, isReconnecting: true, attempt})),
+			this.on$("reconnecting").map(attempt => ({isConnected: false, isReconnecting: true, attempt})),
 			this.on$("reconnect_failed").map(() => ({isConnected: false, isReconnecting: false}))
 		).publishReplay(1).refCount();
 
@@ -45,7 +45,6 @@ export class ObservableSocket {
 		this._socket.emit(event, arg);
 	}
 
-	// On (server side)
 	onAction(action, callback) {
 		this._socket.on(action, (arg, requestID) => {
 			try {
@@ -86,7 +85,15 @@ export class ObservableSocket {
 		});
 	}
 
-	// Emit (client side)
+	onActions(actions) {
+		for (let action in actions) {
+			if (!actions.hasOwnProperty(action)) {
+				continue;
+			}
+			this.onAction(action, actions[action]);
+		}
+	}
+
 	emitAction$(action, arg) {
 		const id = this._nextRequestId++;
 		this._registerCallbacks(action);
