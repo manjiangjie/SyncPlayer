@@ -1,7 +1,7 @@
 import {Observable} from "rxjs";
 
 export class Validator {
-	get isValid() { return this._errors.length; }
+	get isValid() { return !this._errors.length; }
 	get errors() { return this._errors; }
 	get message() { return this._errors.join(", "); }
 

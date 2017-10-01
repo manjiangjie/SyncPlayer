@@ -3,8 +3,8 @@ import _ from "lodash";
 import {validateLogin} from "../../shared/validation/user";
 
 export class UsersStore {
-	get currentUser() { return this._currentUser$; }
-	get isLoggedIn() { return this._currentUser$ && this._currentUser$.isLoggedIn; }
+	get currentUser() { return this._currentUser; }
+	get isLoggedIn() { return this._currentUser && this._currentUser.isLoggedIn; }
 
 	constructor(server) {
 		this._server = server;
@@ -27,14 +27,14 @@ export class UsersStore {
 			.startWith({})
 			.publishReplay(1)
 			.refCount();
-		this.currentUser$.subscribe(user => this._currentUser$ = user);
+		this.currentUser$.subscribe(user => this._currentUser = user);
 		// Bootstrap
 		this._server.on("connect", () => {
 			this._server.emit("users:list");
 			if (!this.isLoggedIn) {
 				return;
 			}
-			this.login$(this.currentUser$.name).subscribe(
+			this.login$(this._currentUser.name).subscribe(
 				user => console.log(`Logged in as ${user.name}`),
 				error => alert(`Could not log back in ${error.message || "Unknown Error"}`)
 			);
