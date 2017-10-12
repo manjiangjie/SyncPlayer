@@ -9,6 +9,7 @@ import {Observable} from "rxjs";
 import {UsersModule} from "./modules/users";
 import {ChatModule} from "./modules/chat";
 import {PlaylistModule} from "./modules/playlist";
+import {FileRepository} from "./repositories/file";
 
 // Initialization
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -53,7 +54,7 @@ app.get('/', (req, res) => {
 
 // Services
 const videoServices = [];
-const playlistRepository = [];
+const playlistRepository = new FileRepository("./data/playlist.json");
 
 // Modules
 const users = new UsersModule(io);

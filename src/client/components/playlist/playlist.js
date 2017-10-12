@@ -1,14 +1,17 @@
 import {ComponentBase} from "../../lib/component";
 import $ from "jquery";
 import "./playlist.scss";
+import * as services from "../../services";
 import {PlaylistToolbarComponent} from "./toolbar";
 import {PlaylistListComponent} from "./list";
 import {PlaylistContextMenuComponent} from "./context-menu";
 import {PlaylistChromeComponent} from "./chrome";
 
 class PlaylistComponent extends ComponentBase {
-	constructor() {
+	constructor(playlistStore, usersStore) {
 		super();
+		this._playlist = playlistStore;
+		this._users = usersStore;
 	}
 
 	_onAttach() {
@@ -21,7 +24,7 @@ class PlaylistComponent extends ComponentBase {
 		this._$chrome = $(`<div class="chrome"/>`).appendTo(this._$mount);
 		this._$scrollArea = $(`<div class="scroll-area"/>`).appendTo(this._$chrome);
 
-		const list = new PlaylistListComponent();
+		const list = new PlaylistListComponent(this._playlist, this._users);
 		list.attach(this._$scrollArea);
 
 		const contextMenu = new PlaylistContextMenuComponent();
@@ -41,7 +44,7 @@ class PlaylistComponent extends ComponentBase {
 let component;
 
 try {
-	component = new PlaylistComponent();
+	component = new PlaylistComponent(services.playlistStore, services.usersStore);
 	component.attach($("section.playlist"));
 } catch (e) {
 	console.error(e);

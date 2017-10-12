@@ -8,9 +8,7 @@ export class ModuleBase {
 	}
 
 	registerClient(client) {
-		client.onAction("playlist:add", data => {
 
-		});
 	}
 
 	clientRegistered() {
